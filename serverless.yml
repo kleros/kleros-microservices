@@ -1,0 +1,39 @@
+service: kleros-microservices
+provider:
+    name: aws
+    runtime: nodejs8.10
+    stage: '${opt:stage, self:custom.defaultStage}'
+    region: us-east-2
+package:
+    exclude:
+        - .env
+plugins:
+    - serverless-kms-secrets
+    - serverless-aws-documentation
+custom:
+    defaultStage: STAGING
+    serverless-kms-secrets:
+        secretsFile: 'kms-secrets.${self:provider.region}.yml'
+    kmsSecrets: '${file(kms-secrets.${self:provider.region}.yml)}'
+    documentation:
+        info:
+            version: '1'
+            title: 'Kleros Microservices'
+            description: 'Collection of Kleros microservices.'
+        resources:
+            - {path: doges-on-trial, description: 'Microservices for the Doges on Trial dapp.'}
+        models:
+            - {name: ErrorResponse, description: 'An error response.', contentType: application/json, schema: '${file(src/models/error.json)}'}
+            - {name: GetDogesOnTrialPresignedS3UploadURLResponse, description: 'The response for getDogesOnTrialPresignedS3UploadURL.', contentType: application/json, schema: '${file(src/doges-on-trial/models/get-presigned-s3-upload-url.json)}'}
+functions:
+    getDogesOnTrialPresignedS3UploadURL:
+        handler: src/doges-on-trial/presigned-s3-upload-url.get
+        events:
+            - {http: {path: doges-on-trial/presigned-s3-upload-url, method: get, cors: true}}
+        environment:
+            INFURA_URL: '${self:custom.kmsSecrets.secrets.${self:provider.stage}_INFURA_URL}'
+        documentation:
+            summary: 'Get a presigned S3 URL for uploading a Doge image.'
+            description: 'The image hash must be added to the contract first.'
+            queryParams: [{name: imageHash, description: 'The hash of the image that will be uploaded.'}]
+            methodResponses: [{statusCode: '200', responseModels: {application/json: GetDogesOnTrialPresignedS3UploadURLResponse}}, {statusCode: '400', responseModels: {application/json: ErrorResponse}}]

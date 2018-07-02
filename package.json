@@ -1,0 +1,31 @@
+{
+  "name": "kleros-microservices",
+  "version": "1.0.0",
+  "description": "Collection of Kleros microservices.",
+  "repository": "https://github.com/kleros/kleros-microservices",
+  "author": "Kleros",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "prettify": "kleros-scripts prettify",
+    "lint": "kleros-scripts lint:js",
+    "precommit": "kleros-scripts precommit",
+    "commitmsg": "kleros-scripts commitmsg",
+    "cz": "kleros-scripts cz",
+    "invoke": "env-cmd ./.env serverless invoke -l -f",
+    "deploy:staging": "env-cmd ./.env serverless deploy -s STAGING",
+    "deploy": "env-cmd ./.env serverless deploy -s PRODUCTION"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "devDependencies": {
+    "env-cmd": "^8.0.2",
+    "kleros-scripts": "^0.6.0",
+    "serverless": "^1.27.3",
+    "serverless-aws-documentation": "^1.1.0",
+    "serverless-kms-secrets": "^1.0.3"
+  }
+}
