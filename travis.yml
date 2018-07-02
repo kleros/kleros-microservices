@@ -8,16 +8,5 @@ cache:
 install: 'yarn install --pure-lockfile'
 script:
     - 'yarn run lint'
-deploy:
-    -
-        provider: script
-        script: 'yarn run deploy:staging'
-        on:
-            branch: develop
-    -
-        provider: script
-        script: 'yarn run deploy'
-        on:
-            branch: master
 notifications:
     slack: 'kleros:Ub8n81EgKJ3iRrMDyWyQIVJp'
