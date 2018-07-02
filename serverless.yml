@@ -4,9 +4,16 @@ provider:
     runtime: nodejs8.10
     stage: '${opt:stage, self:custom.defaultStage}'
     region: us-east-2
+    iamRoleStatements:
+        -
+            Effect: Allow
+            Action: ['KMS:Decrypt']
+            Resource: '${self:custom.kmsSecrets.keyArn}'
 package:
     exclude:
         - .env
+environment:
+    AWS_REGION: '${self:provider.region}'
 plugins:
     - serverless-kms-secrets
     - serverless-aws-documentation
@@ -32,6 +39,7 @@ functions:
             - {http: {path: doges-on-trial/presigned-s3-upload-url, method: get, cors: true}}
         environment:
             INFURA_URL: '${self:custom.kmsSecrets.secrets.${self:provider.stage}_INFURA_URL}'
+            ARBITRABLE_PERMISSION_LIST_ADDRESS: '${self:custom.kmsSecrets.secrets.${self:provider.stage}_ARBITRABLE_PERMISSION_LIST_ADDRESS}'
         documentation:
             summary: 'Get a presigned S3 URL for uploading a Doge image.'
             description: 'The image hash must be added to the contract first.'

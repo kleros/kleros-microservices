@@ -13,7 +13,9 @@
     "commitmsg": "kleros-scripts commitmsg",
     "cz": "kleros-scripts cz",
     "invoke": "env-cmd ./.env serverless invoke -l -f",
-    "deploy:staging": "env-cmd ./.env serverless deploy -s STAGING",
+    "build": "docker run --rm -v $PWD:/data -w /data node:8 npm rebuild scrypt",
+    "deploy:function": "env-cmd ./.env serverless deploy function -f",
+    "deploy:staging": "env-cmd ./.env serverless deploy",
     "deploy": "env-cmd ./.env serverless deploy -s PRODUCTION"
   },
   "commitlint": {
@@ -27,5 +29,9 @@
     "serverless": "^1.27.3",
     "serverless-aws-documentation": "^1.1.0",
     "serverless-kms-secrets": "^1.0.3"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.266.1",
+    "web3": "^1.0.0-beta.34"
   }
 }
