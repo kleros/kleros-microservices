@@ -16,7 +16,7 @@
     "build": "docker run --rm -v $PWD:/data -w /data node:8 npm rebuild scrypt",
     "deploy:function": "env-cmd ./.env serverless deploy function -f",
     "deploy:staging": "env-cmd ./.env serverless deploy",
-    "deploy": "env-cmd ./.env serverless deploy -s PRODUCTION"
+    "deploy": "env-cmd ./.env serverless deploy -s production"
   },
   "commitlint": {
     "extends": [
@@ -28,6 +28,7 @@
     "kleros-scripts": "^0.6.0",
     "serverless": "^1.27.3",
     "serverless-aws-documentation": "^1.1.0",
+    "serverless-iam-roles-per-function": "^1.0.1",
     "serverless-kms-secrets": "^1.0.3"
   },
   "dependencies": {

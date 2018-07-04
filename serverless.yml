@@ -4,11 +4,6 @@ provider:
     runtime: nodejs8.10
     stage: '${opt:stage, self:custom.defaultStage}'
     region: us-east-2
-    iamRoleStatements:
-        -
-            Effect: Allow
-            Action: ['KMS:Decrypt']
-            Resource: '${self:custom.kmsSecrets.keyArn}'
 package:
     exclude:
         - .env
@@ -16,9 +11,13 @@ environment:
     AWS_REGION: '${self:provider.region}'
 plugins:
     - serverless-kms-secrets
+    - serverless-iam-roles-per-function
     - serverless-aws-documentation
 custom:
-    defaultStage: STAGING
+    defaultStage: staging
+    environments:
+        staging: STAGING
+        production: PRODUCTION
     serverless-kms-secrets:
         secretsFile: 'kms-secrets.${self:provider.region}.yml'
     kmsSecrets: '${file(kms-secrets.${self:provider.region}.yml)}'
@@ -31,17 +30,21 @@ custom:
             - {path: doges-on-trial, description: 'Microservices for the Doges on Trial dapp.'}
         models:
             - {name: ErrorResponse, description: 'An error response.', contentType: application/json, schema: '${file(src/models/error.json)}'}
-            - {name: GetDogesOnTrialPresignedS3UploadURLResponse, description: 'The response for getDogesOnTrialPresignedS3UploadURL.', contentType: application/json, schema: '${file(src/doges-on-trial/models/get-presigned-s3-upload-url.json)}'}
+            - {name: PostDogesOnTrialDogeImagesResponse, description: 'The response for postDogesOnTrialDogeImages.', contentType: application/json, schema: '${file(src/doges-on-trial/models/doge-images.json):post.response}'}
 functions:
-    getDogesOnTrialPresignedS3UploadURL:
-        handler: src/doges-on-trial/presigned-s3-upload-url.get
+    postDogesOnTrialDogeImages:
+        handler: src/doges-on-trial/doge-images.post
         events:
-            - {http: {path: doges-on-trial/presigned-s3-upload-url, method: get, cors: true}}
+            - {http: {path: doges-on-trial/doge-images, method: post, cors: true}}
         environment:
-            INFURA_URL: '${self:custom.kmsSecrets.secrets.${self:provider.stage}_INFURA_URL}'
-            ARBITRABLE_PERMISSION_LIST_ADDRESS: '${self:custom.kmsSecrets.secrets.${self:provider.stage}_ARBITRABLE_PERMISSION_LIST_ADDRESS}'
+            INFURA_URL: '${self:custom.kmsSecrets.secrets.${self:custom.environments.${self:provider.stage}}_INFURA_URL}'
+            ARBITRABLE_PERMISSION_LIST_ADDRESS: '${self:custom.kmsSecrets.secrets.${self:custom.environments.${self:provider.stage}}_ARBITRABLE_PERMISSION_LIST_ADDRESS}'
+        iamRoleStatements:
+            - {Effect: Allow, Action: ['KMS:Decrypt'], Resource: '${self:custom.kmsSecrets.keyArn}'}
+            - {Effect: Allow, Action: ['s3:PutObject'], Resource: 'arn:aws:s3:::${self:provider.stage}-doges-on-trial-doge-images'}
         documentation:
-            summary: 'Get a presigned S3 URL for uploading a Doge image.'
+            summary: 'Upload a doge image.'
             description: 'The image hash must be added to the contract first.'
-            queryParams: [{name: imageHash, description: 'The hash of the image that will be uploaded.'}]
-            methodResponses: [{statusCode: '200', responseModels: {application/json: GetDogesOnTrialPresignedS3UploadURLResponse}}, {statusCode: '400', responseModels: {application/json: ErrorResponse}}]
+            requestBody: {description: 'The image''s raw bytes.'}
+            requestHeaders: [{name: 'Content-Type: application/octet-stream'}]
+            methodResponses: [{statusCode: '200', responseModels: {application/json: PostDogesOnTrialDogeImagesResponse}}, {statusCode: '400', responseModels: {application/json: ErrorResponse}}]

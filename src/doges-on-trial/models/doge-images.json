@@ -1,0 +1,13 @@
+{
+  "post": {
+    "response": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "type": "string",
+          "description": "The uploaded image's url."
+        }
+      }
+    }
+  }
+}

@@ -1,7 +1,7 @@
 const _web3 = require('../utils/web3')
 const ArbitrablePermissionList = require('../assets/contracts/ArbitrablePermissionList.json')
 
-module.exports.get = async (_event, _context, callback) => {
+module.exports.post = async (_event, _context, callback) => {
   const web3 = await _web3()
   const arbitrablePermissionList = new web3.eth.Contract(
     ArbitrablePermissionList.abi,

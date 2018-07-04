@@ -5485,6 +5485,12 @@ serverless-aws-documentation@^1.1.0:
   dependencies:
     object-hash "^1.1.7"
 
+serverless-iam-roles-per-function@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/serverless-iam-roles-per-function/-/serverless-iam-roles-per-function-1.0.1.tgz#a0e960bbdd553a25e31689b51b5d4261f664ead4"
+  dependencies:
+    lodash "^4.17.10"
+
 serverless-kms-secrets@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/serverless-kms-secrets/-/serverless-kms-secrets-1.0.3.tgz#23db8b4e78e3a3768fc68418330055edb755ecee"
