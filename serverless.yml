@@ -39,6 +39,7 @@ functions:
         environment:
             INFURA_URL: '${self:custom.kmsSecrets.secrets.${self:custom.environments.${self:provider.stage}}_INFURA_URL}'
             ARBITRABLE_PERMISSION_LIST_ADDRESS: '${self:custom.kmsSecrets.secrets.${self:custom.environments.${self:provider.stage}}_ARBITRABLE_PERMISSION_LIST_ADDRESS}'
+        iamRoleStatementsName: 'postDogesOnTrialDogeImages-${self:provider.stage}-lambda-role'
         iamRoleStatements:
             - {Effect: Allow, Action: ['KMS:Decrypt'], Resource: '${self:custom.kmsSecrets.keyArn}'}
             - {Effect: Allow, Action: ['s3:PutObject'], Resource: 'arn:aws:s3:::${self:provider.stage}-doges-on-trial-doge-images'}
