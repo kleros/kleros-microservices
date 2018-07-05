@@ -1,5 +1,14 @@
 {
   "post": {
+    "request": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "type": "string",
+          "description": "The base64 encoded image data URL."
+        }
+      }
+    },
     "response": {
       "type": "object",
       "properties": {

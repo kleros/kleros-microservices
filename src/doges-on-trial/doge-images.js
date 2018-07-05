@@ -1,19 +1,68 @@
+const { promisify } = require('util')
+
+const AWS = require('aws-sdk')
+
 const _web3 = require('../utils/web3')
 const ArbitrablePermissionList = require('../assets/contracts/ArbitrablePermissionList.json')
 
-module.exports.post = async (_event, _context, callback) => {
+module.exports.post = async (event, _context, callback) => {
+  // Initialize web3 and contract
   const web3 = await _web3()
   const arbitrablePermissionList = new web3.eth.Contract(
     ArbitrablePermissionList.abi,
     process.env.ARBITRABLE_PERMISSION_LIST_ADDRESS
   )
 
-  const item = await arbitrablePermissionList.methods
-    .items('0x0000000000000000000000000000000000000000000000000000000000000000')
-    .call()
+  // Check that the image has been added to the contract
+  const dataURL = JSON.parse(event.body).payload
+  const hash = web3.utils.keccak256(dataURL)
+  const item = await arbitrablePermissionList.methods.items(hash).call()
+  if (Number(item.status) === 0)
+    return callback(null, {
+      statusCode: 403,
+      body: JSON.stringify({
+        error: 'This image has not been added to the contract yet.'
+      })
+    })
 
+  // Parse image
+  let _match, mimeType, base64Data
+  try {
+    ;[_match, mimeType, base64Data] = dataURL.match(
+      /^data:(image\/(?:png|gif|jpe?g));base64,(.+)$/
+    )
+  } catch (err) {
+    console.error(err)
+    return callback(null, {
+      statusCode: 400,
+      body: JSON.stringify({ error: 'Invalid base64 encoded image data URL.' })
+    })
+  }
+  if (base64Data.length * (3 / 4) > 100000)
+    return callback(null, {
+      statusCode: 400,
+      body: JSON.stringify({
+        error: 'Image is too big. It has to be smaller than 100KB.'
+      })
+    })
+
+  // Upload image to S3 bucket
+  AWS.config.update({ region: process.env.AWS_REGION })
+  const bucket = new AWS.S3({
+    params: { Bucket: process.env.DOGES_ON_TRIAL_DOGE_IMAGES_S3_BUCKET }
+  })
+  bucket.upload = promisify(bucket.upload)
+  const { Location: location } = await bucket.upload({
+    Key: hash,
+    Body: Buffer.from(base64Data, 'base64'),
+    ContentEncoding: 'base64',
+    ContentType: mimeType,
+    ACL: 'public-read'
+  })
+
+  // Return image URL
   callback(null, {
     statusCode: 200,
-    body: JSON.stringify(item)
+    body: JSON.stringify({ payload: location })
   })
 }
