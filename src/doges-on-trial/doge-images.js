@@ -20,6 +20,7 @@ module.exports.post = async (event, _context, callback) => {
   if (Number(item.status) === 0)
     return callback(null, {
       statusCode: 403,
+      headers: { 'Access-Control-Allow-Origin': '*' },
       body: JSON.stringify({
         error: 'This image has not been added to the contract yet.'
       })
@@ -35,12 +36,14 @@ module.exports.post = async (event, _context, callback) => {
     console.error(err)
     return callback(null, {
       statusCode: 400,
+      headers: { 'Access-Control-Allow-Origin': '*' },
       body: JSON.stringify({ error: 'Invalid base64 encoded image data URL.' })
     })
   }
   if (base64Data.length * (3 / 4) > 100000)
     return callback(null, {
       statusCode: 400,
+      headers: { 'Access-Control-Allow-Origin': '*' },
       body: JSON.stringify({
         error: 'Image is too big. It has to be smaller than 100KB.'
       })
@@ -63,6 +66,7 @@ module.exports.post = async (event, _context, callback) => {
   // Return image URL
   callback(null, {
     statusCode: 200,
+    headers: { 'Access-Control-Allow-Origin': '*' },
     body: JSON.stringify({ payload: { imageURL: location } })
   })
 }
