@@ -4,8 +4,13 @@
       "type": "object",
       "properties": {
         "payload": {
-          "type": "string",
-          "description": "The base64 encoded image data URL."
+          "type": "object",
+          "properties": {
+            "imageFileDataURL": {
+              "type": "string",
+              "description": "The base64 encoded image data URL."
+            }
+          }
         }
       }
     },
@@ -13,8 +18,13 @@
       "type": "object",
       "properties": {
         "payload": {
-          "type": "string",
-          "description": "The uploaded image's url."
+          "type": "object",
+          "properties": {
+            "imageURL": {
+              "type": "string",
+              "description": "The uploaded image's URL."
+            }
+          }
         }
       }
     }

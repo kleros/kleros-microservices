@@ -14,7 +14,7 @@ module.exports.post = async (event, _context, callback) => {
   )
 
   // Check that the image has been added to the contract
-  const dataURL = JSON.parse(event.body).payload
+  const dataURL = JSON.parse(event.body).payload.imageFileDataURL
   const hash = web3.utils.keccak256(dataURL)
   const item = await arbitrablePermissionList.methods.items(hash).call()
   if (Number(item.status) === 0)
@@ -63,6 +63,6 @@ module.exports.post = async (event, _context, callback) => {
   // Return image URL
   callback(null, {
     statusCode: 200,
-    body: JSON.stringify({ payload: location })
+    body: JSON.stringify({ payload: { imageURL: location } })
   })
 }
