@@ -40,7 +40,7 @@ module.exports.post = async (event, _context, callback) => {
       body: JSON.stringify({ error: 'Invalid base64 encoded image data URL.' })
     })
   }
-  if (base64Data.length * (3 / 4) > 100000)
+  if (base64Data.length * (3 / 4) > 3e6)
     return callback(null, {
       statusCode: 400,
       headers: { 'Access-Control-Allow-Origin': '*' },
