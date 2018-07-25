@@ -7,4 +7,4 @@ dynamoDB.getItem = promisify(dynamoDB.getItem)
 dynamoDB.putItem = promisify(dynamoDB.putItem)
 dynamoDB.updateItem = promisify(dynamoDB.updateItem)
 
-export default dynamoDB
+module.exports = dynamoDB

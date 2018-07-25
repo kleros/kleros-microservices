@@ -8,7 +8,7 @@ module.exports.patch = async (event, _context, callback) => {
   // Validate signature
   const payload = JSON.parse(event.body).payload
   if (
-    (await web3.eth.personal.ecRecover(
+    (await web3.eth.accounts.recover(
       JSON.stringify(payload.settings),
       payload.signature
     )) !== payload.address
@@ -33,7 +33,7 @@ module.exports.patch = async (event, _context, callback) => {
           TableName: 'user-settings',
           UpdateExpression: updateKeys.map(k => `SET ${k} = :_${k}`).join(', '),
           ExpressionAttributeValues: updateKeys.reduce((acc, k) => {
-            acc[`_${k}`] = payload.settings[k]
+            acc[`:_${k}`] = payload.settings[k]
             return acc
           }, {}),
           ReturnValues: 'ALL_NEW'
