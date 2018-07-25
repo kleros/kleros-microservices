@@ -1,6 +1,8 @@
 const { promisify } = require('util')
 
 const AWS = require('aws-sdk')
+const imageSize = require('image-size')
+const dataURIToBuffer = require('data-uri-to-buffer')
 
 const _web3 = require('../utils/web3')
 const ArbitrablePermissionList = require('../assets/contracts/ArbitrablePermissionList.json')
@@ -40,12 +42,26 @@ module.exports.post = async (event, _context, callback) => {
       body: JSON.stringify({ error: 'Invalid base64 encoded image data URL.' })
     })
   }
+
+  // Check size
   if (base64Data.length * (3 / 4) > 3e6)
     return callback(null, {
       statusCode: 400,
       headers: { 'Access-Control-Allow-Origin': '*' },
       body: JSON.stringify({
-        error: 'Image is too big. It has to be smaller than 100KB.'
+        error: 'Image is too big. It has to be smaller than 300KB.'
+      })
+    })
+
+  // Check dimensions
+  const { width, height } = imageSize(dataURIToBuffer(dataURL))
+  if (width < 250 || height < 250)
+    return callback(null, {
+      statusCode: 400,
+      headers: { 'Access-Control-Allow-Origin': '*' },
+      body: JSON.stringify({
+        error:
+          'Image is too small. It must be more than 250px wide and 250px tall.'
       })
     })
 

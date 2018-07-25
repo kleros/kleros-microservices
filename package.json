@@ -33,6 +33,8 @@
   },
   "dependencies": {
     "aws-sdk": "^2.266.1",
+    "data-uri-to-buffer": "^2.0.0",
+    "image-size": "^0.6.3",
     "web3": "^1.0.0-beta.34"
   }
 }
