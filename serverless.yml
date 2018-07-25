@@ -30,9 +30,26 @@ custom:
             - {path: doges-on-trial, description: 'Microservices for the Doges on Trial dapp.'}
         models:
             - {name: ErrorResponse, description: 'An error response.', contentType: application/json, schema: '${file(src/models/error.json)}'}
+            - {name: PatchUserSettingsRequest, description: 'The request for patchUserSettings.', contentType: application/json, schema: '${file(src/global/models/user-settings.json):patch.request}'}
+            - {name: PatchUserSettingsResponse, description: 'The response for patchUserSettings.', contentType: application/json, schema: '${file(src/global/models/user-settings.json):patch.response}'}
             - {name: PostDogesOnTrialDogeImagesRequest, description: 'The request for postDogesOnTrialDogeImages.', contentType: application/json, schema: '${file(src/doges-on-trial/models/doge-images.json):post.request}'}
             - {name: PostDogesOnTrialDogeImagesResponse, description: 'The response for postDogesOnTrialDogeImages.', contentType: application/json, schema: '${file(src/doges-on-trial/models/doge-images.json):post.response}'}
 functions:
+    patchUserSettings:
+        handler: src/global/user-settings.patch
+        events:
+            - {http: {path: user-settings, method: patch, cors: true}}
+        environment:
+            INFURA_URL: '${self:custom.kmsSecrets.secrets.${self:custom.environments.${self:provider.stage}}_INFURA_URL}'
+        iamRoleStatementsName: 'patchUserSettings-${self:provider.stage}-lambda-role'
+        iamRoleStatements:
+            - {Effect: Allow, Action: ['KMS:Decrypt'], Resource: '${self:custom.kmsSecrets.keyArn}'}
+            - {Effect: Allow, Action: ['dynamodb:UpdateItem'], Resource: 'arn:aws:dynamodb:us-east-2:547511976516:table/user-settings'}
+        documentation:
+            summary: 'Update user settings.'
+            description: 'Update user settings for an Ethereum address.'
+            requestModels: {application/json: PatchUserSettingsRequest}
+            methodResponses: [{statusCode: '200', responseModels: {application/json: PatchUserSettingsResponse}}, {statusCode: '400', responseModels: {application/json: ErrorResponse}}]
     postDogesOnTrialDogeImages:
         handler: src/doges-on-trial/doge-images.post
         events:
