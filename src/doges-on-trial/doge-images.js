@@ -5,28 +5,28 @@ const imageSize = require('image-size')
 const dataURIToBuffer = require('data-uri-to-buffer')
 
 const _web3 = require('../utils/web3')
-const ArbitrablePermissionList = require('../assets/contracts/ArbitrablePermissionList.json')
+// const ArbitrablePermissionList = require('../assets/contracts/ArbitrablePermissionList.json')
 
 module.exports.post = async (event, _context, callback) => {
   // Initialize web3 and contract
   const web3 = await _web3()
-  const arbitrablePermissionList = new web3.eth.Contract(
-    ArbitrablePermissionList.abi,
-    process.env.ARBITRABLE_PERMISSION_LIST_ADDRESS
-  )
+  // const arbitrablePermissionList = new web3.eth.Contract(
+  //   ArbitrablePermissionList.abi,
+  //   process.env.ARBITRABLE_PERMISSION_LIST_ADDRESS
+  // )
 
   // Check that the image has been added to the contract
   const dataURL = JSON.parse(event.body).payload.imageFileDataURL
   const hash = web3.utils.keccak256(dataURL)
-  const item = await arbitrablePermissionList.methods.items(hash).call()
-  if (Number(item.status) === 0)
-    return callback(null, {
-      statusCode: 403,
-      headers: { 'Access-Control-Allow-Origin': '*' },
-      body: JSON.stringify({
-        error: 'This image has not been added to the contract yet.'
-      })
-    })
+  // const item = await arbitrablePermissionList.methods.items(hash).call()
+  // if (Number(item.status) === 0)
+  //   return callback(null, {
+  //     statusCode: 403,
+  //     headers: { 'Access-Control-Allow-Origin': '*' },
+  //     body: JSON.stringify({
+  //       error: 'This image has not been added to the contract yet.'
+  //     })
+  //   })
 
   // Parse image
   let _match, mimeType, base64Data
