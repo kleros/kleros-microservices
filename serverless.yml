@@ -39,6 +39,18 @@ custom:
           schema: '${file(src/models/error.json)}',
         }
       - {
+          name: PostCFSRequest,
+          description: 'The request for postCFS.',
+          contentType: application/json,
+          schema: '${file(src/global/models/cfs.json):post.request}',
+        }
+      - {
+          name: PostCFSResponse,
+          description: 'The response for postCFS.',
+          contentType: application/json,
+          schema: '${file(src/global/models/cfs.json):post.response}',
+        }
+      - {
           name: PatchUserSettingsRequest,
           description: 'The request for patchUserSettings.',
           contentType: application/json,
