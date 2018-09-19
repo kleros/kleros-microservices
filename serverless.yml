@@ -75,6 +75,34 @@ custom:
           schema: '${file(src/doges-on-trial/models/doge-images.json):post.response}',
         }
 functions:
+  postCFS:
+    handler: src/global/cfs.post
+    events:
+      - { http: { path: cfs, method: post, cors: true } }
+    environment:
+      CFS_S3_BUCKET: '${self:provider.stage}-cfs'
+    iamRoleStatementsName: 'postCFS-${self:provider.stage}-lambda-role'
+    iamRoleStatements:
+      - {
+          Effect: Allow,
+          Action: ['s3:PutObject', 's3:PutObjectAcl'],
+          Resource: 'arn:aws:s3:::${self:provider.stage}-cfs/*',
+        }
+    documentation:
+      summary: 'Upload a file to CFS.'
+      description: 'Supply the file name and the base64 encoded data.'
+      requestModels: { application/json: PostCFSRequest }
+      methodResponses:
+        [
+          {
+            statusCode: '200',
+            responseModels: { application/json: PostCFSResponse },
+          },
+          {
+            statusCode: '400',
+            responseModels: { application/json: ErrorResponse },
+          },
+        ]
   patchUserSettings:
     handler: src/global/user-settings.patch
     events:
