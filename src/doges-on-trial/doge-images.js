@@ -19,7 +19,15 @@ module.exports.post = async (event, _context, callback) => {
   const dataURL = JSON.parse(event.body).payload.imageFileDataURL
   const hash = web3.utils.keccak256(dataURL)
   const item = await arbitrablePermissionList.methods.items(hash).call()
-  if (Number(item.status) !== 0)
+  if (
+    Number(item.status) !== 0 &&
+    (await arbitrablePermissionList.getPastEvents('ItemStatusChange', {
+      filter: { value: hash },
+      fromBlock: 0,
+      toBlock: 'latest'
+    }))[0].blockNumber >
+      Number(process.env.ARBITRABLE_PERMISSION_LIST_BLOCK_BLOCK_NUMBER)
+  )
     return callback(null, {
       statusCode: 403,
       headers: { 'Access-Control-Allow-Origin': '*' },
