@@ -1,0 +1,40 @@
+{
+  "patch": {
+    "request": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "type": "object",
+          "properties": {
+            "address": {
+              "type": "string",
+              "description": "The address to update settings for."
+            },
+            "settings": {
+              "type": "object",
+              "description": "The settings update."
+            },
+            "signature": {
+              "type": "string",
+              "description": "The signed settings update object."
+            }
+          }
+        }
+      }
+    },
+    "response": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "type": "object",
+          "properties": {
+            "settings": {
+              "type": "object",
+              "description": "The updated settings object."
+            }
+          }
+        }
+      }
+    }
+  }
+}

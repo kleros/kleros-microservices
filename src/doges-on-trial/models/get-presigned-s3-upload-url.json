@@ -1,9 +1,0 @@
-{
-  "type": "object",
-  "properties": {
-    "payload": {
-      "type": "string",
-      "description": "The presigned url."
-    }
-  }
-}

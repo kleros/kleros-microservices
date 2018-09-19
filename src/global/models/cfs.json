@@ -1,0 +1,36 @@
+{
+  "post": {
+    "request": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "type": "object",
+          "properties": {
+            "fileName": {
+              "type": "string",
+              "description": "The file name."
+            },
+            "base64EncodedFile": {
+              "type": "string",
+              "description": "The base64 encoded file."
+            }
+          }
+        }
+      }
+    },
+    "response": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "type": "object",
+          "properties": {
+            "fileURL": {
+              "type": "string",
+              "description": "The uploaded file's URL."
+            }
+          }
+        }
+      }
+    }
+  }
+}

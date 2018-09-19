@@ -1,0 +1,32 @@
+{
+  "post": {
+    "request": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "type": "object",
+          "properties": {
+            "imageFileDataURL": {
+              "type": "string",
+              "description": "The base64 encoded image data URL."
+            }
+          }
+        }
+      }
+    },
+    "response": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "type": "object",
+          "properties": {
+            "imageURL": {
+              "type": "string",
+              "description": "The uploaded image's URL."
+            }
+          }
+        }
+      }
+    }
+  }
+}
