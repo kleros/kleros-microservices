@@ -31,6 +31,10 @@ custom:
           path: doges-on-trial,
           description: 'Microservices for the Doges on Trial dapp.',
         }
+      - {
+          path: token-on-trial,
+          description: 'Microservices for the Tokens on Trial dapp.',
+        }
     models:
       - {
           name: ErrorResponse,
@@ -73,6 +77,18 @@ custom:
           description: 'The response for postDogesOnTrialDogeImages.',
           contentType: application/json,
           schema: '${file(src/doges-on-trial/models/doge-images.json):post.response}',
+        }
+      - {
+          name: PostTokenRequest,
+          description: 'The request for postToken.',
+          contentType: application/json,
+          schema: '${file(src/tokens-on-trial/models/token.json):post.request}',
+        }
+      - {
+          name: PostTokenResponse,
+          description: 'The response for postToken.',
+          contentType: application/json,
+          schema: '${file(src/tokens-on-trial/models/token.json):post.response}',
         }
 functions:
   postCFS:
@@ -167,6 +183,39 @@ functions:
             statusCode: '200',
             responseModels:
               { application/json: PostDogesOnTrialDogeImagesResponse },
+          },
+          {
+            statusCode: '400',
+            responseModels: { application/json: ErrorResponse },
+          },
+        ]
+  postToken:
+    handler: src/tokens-on-trial/token.post
+    events:
+      - { http: { path: token, method: post, cors: true } }
+    environment:
+      INFURA_URL: '${self:custom.kmsSecrets.secrets.${self:custom.environments.${self:provider.stage}}_INFURA_URL}'
+    iamRoleStatementsName: 'postToken-${self:provider.stage}-lambda-role'
+    iamRoleStatements:
+      - {
+          Effect: Allow,
+          Action: ['KMS:Decrypt'],
+          Resource: '${self:custom.kmsSecrets.keyArn}',
+        }
+      - {
+          Effect: Allow,
+          Action: ['dynamodb:PutItem'],
+          Resource: 'arn:aws:dynamodb:us-east-2:547511976516:table/token',
+        }
+    documentation:
+      summary: 'Upload token data.'
+      description: 'Takes token data and stores it by content-address.'
+      requestModels: { application/json: PostTokenRequest }
+      methodResponses:
+        [
+          {
+            statusCode: '200',
+            responseModels: { application/json: PostTokenResponse },
           },
           {
             statusCode: '400',
