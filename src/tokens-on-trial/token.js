@@ -4,7 +4,7 @@ module.exports.patch = async (event, _context, callback) => {
   const web3 = await _web3()
 
   const payload = JSON.parse(event.body).payload
-  const tokenID = web3.sha3(JSON.stringify(payload.token), { encoding: 'hex' })
+  const tokenID = web3.sha3(JSON.stringify(payload.token))
 
   const keys = [
     'name',

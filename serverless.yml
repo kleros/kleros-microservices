@@ -82,13 +82,13 @@ custom:
           name: PatchTokenRequest,
           description: 'The request for patchToken.',
           contentType: application/json,
-          schema: '${file(src/tokens-on-trial/models/token.json):post.request}',
+          schema: '${file(src/tokens-on-trial/models/token.json):patch.request}',
         }
       - {
           name: PatchTokenResponse,
           description: 'The response for patchToken.',
           contentType: application/json,
-          schema: '${file(src/tokens-on-trial/models/token.json):post.response}',
+          schema: '${file(src/tokens-on-trial/models/token.json):patch.response}',
         }
 functions:
   postCFS:
@@ -204,7 +204,7 @@ functions:
         }
       - {
           Effect: Allow,
-          Action: ['dynamodb:PutItem'],
+          Action: ['dynamodb:UpdateItem'],
           Resource: 'arn:aws:dynamodb:us-east-2:547511976516:table/token',
         }
     documentation:
