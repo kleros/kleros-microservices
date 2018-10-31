@@ -79,14 +79,14 @@ custom:
           schema: '${file(src/doges-on-trial/models/doge-images.json):post.response}',
         }
       - {
-          name: PostTokenRequest,
-          description: 'The request for postToken.',
+          name: PatchTokenRequest,
+          description: 'The request for patchToken.',
           contentType: application/json,
           schema: '${file(src/tokens-on-trial/models/token.json):post.request}',
         }
       - {
-          name: PostTokenResponse,
-          description: 'The response for postToken.',
+          name: PatchTokenResponse,
+          description: 'The response for patchToken.',
           contentType: application/json,
           schema: '${file(src/tokens-on-trial/models/token.json):post.response}',
         }
@@ -189,13 +189,13 @@ functions:
             responseModels: { application/json: ErrorResponse },
           },
         ]
-  postToken:
-    handler: src/tokens-on-trial/token.post
+  patchToken:
+    handler: src/tokens-on-trial/token.patch
     events:
-      - { http: { path: token, method: post, cors: true } }
+      - { http: { path: token, method: patch, cors: true } }
     environment:
       INFURA_URL: '${self:custom.kmsSecrets.secrets.${self:custom.environments.${self:provider.stage}}_INFURA_URL}'
-    iamRoleStatementsName: 'postToken-${self:provider.stage}-lambda-role'
+    iamRoleStatementsName: 'patchToken-${self:provider.stage}-lambda-role'
     iamRoleStatements:
       - {
           Effect: Allow,
@@ -210,12 +210,12 @@ functions:
     documentation:
       summary: 'Upload token data.'
       description: 'Takes token data and stores it by content-address.'
-      requestModels: { application/json: PostTokenRequest }
+      requestModels: { application/json: PatchTokenRequest }
       methodResponses:
         [
           {
             statusCode: '200',
-            responseModels: { application/json: PostTokenResponse },
+            responseModels: { application/json: PatchTokenResponse },
           },
           {
             statusCode: '400',
