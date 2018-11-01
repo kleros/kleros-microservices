@@ -79,16 +79,16 @@ custom:
           schema: '${file(src/doges-on-trial/models/doge-images.json):post.response}',
         }
       - {
-          name: PatchTokenRequest,
-          description: 'The request for patchToken.',
+          name: PutTokenRequest,
+          description: 'The request for putToken.',
           contentType: application/json,
-          schema: '${file(src/tokens-on-trial/models/token.json):patch.request}',
+          schema: '${file(src/tokens-on-trial/models/token.json):put.request}',
         }
       - {
-          name: PatchTokenResponse,
-          description: 'The response for patchToken.',
+          name: PutTokenResponse,
+          description: 'The response for putToken.',
           contentType: application/json,
-          schema: '${file(src/tokens-on-trial/models/token.json):patch.response}',
+          schema: '${file(src/tokens-on-trial/models/token.json):put.response}',
         }
 functions:
   postCFS:
@@ -189,13 +189,13 @@ functions:
             responseModels: { application/json: ErrorResponse },
           },
         ]
-  patchToken:
-    handler: src/tokens-on-trial/token.patch
+  putToken:
+    handler: src/tokens-on-trial/token.put
     events:
-      - { http: { path: token, method: patch, cors: true } }
+      - { http: { path: token, method: put, cors: true } }
     environment:
       INFURA_URL: '${self:custom.kmsSecrets.secrets.${self:custom.environments.${self:provider.stage}}_INFURA_URL}'
-    iamRoleStatementsName: 'patchToken-${self:provider.stage}-lambda-role'
+    iamRoleStatementsName: 'putToken-${self:provider.stage}-lambda-role'
     iamRoleStatements:
       - {
           Effect: Allow,
@@ -204,18 +204,18 @@ functions:
         }
       - {
           Effect: Allow,
-          Action: ['dynamodb:UpdateItem'],
+          Action: ['dynamodb:PutItem'],
           Resource: 'arn:aws:dynamodb:us-east-2:547511976516:table/token',
         }
     documentation:
-      summary: 'Update token data.'
-      description: 'Takes token data and stores it by content-address.'
-      requestModels: { application/json: PatchTokenRequest }
+      summary: 'Upload token data.'
+      description: 'Stores token data.'
+      requestModels: { application/json: PutTokenRequest }
       methodResponses:
         [
           {
             statusCode: '200',
-            responseModels: { application/json: PatchTokenResponse },
+            responseModels: { application/json: PutTokenResponse },
           },
           {
             statusCode: '400',
