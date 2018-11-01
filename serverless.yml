@@ -208,7 +208,7 @@ functions:
           Resource: 'arn:aws:dynamodb:us-east-2:547511976516:table/token',
         }
     documentation:
-      summary: 'Upload token data.'
+      summary: 'Update token data.'
       description: 'Takes token data and stores it by content-address.'
       requestModels: { application/json: PatchTokenRequest }
       methodResponses:

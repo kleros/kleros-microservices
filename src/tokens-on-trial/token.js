@@ -10,7 +10,7 @@ module.exports.patch = async (event, _context, callback) => {
     'name',
     'ticker',
     'address',
-    'uri',
+    'URI',
   ].filter(
     k => payload.token[k]
   )
