@@ -32,7 +32,7 @@ custom:
           description: 'Microservices for the Doges on Trial dapp.',
         }
       - {
-          path: token-on-trial,
+          path: tokens-on-trial,
           description: 'Microservices for the Tokens on Trial dapp.',
         }
     models:
