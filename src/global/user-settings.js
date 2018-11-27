@@ -25,12 +25,12 @@ module.exports.patch = async (event, _context, callback) => {
   const updateKeys = [
     'email',
     'dogecoinAddress',
-    'name',
+    'fullName',
     'phone',
-    'court-notification-setting-appeal',
-    'court-notification-setting-draw',
-    'court-notification-setting-lose',
-    'court-notification-setting-win'
+    'courtNotificationSettingAppeal',
+    'courtNotificationSettingDraw',
+    'courtNotificationSettingLose',
+    'courtNotificationSettingWin'
   ].filter(k => payload.settings[k])
   callback(null, {
     statusCode: 200,
@@ -40,7 +40,9 @@ module.exports.patch = async (event, _context, callback) => {
         settings: await dynamoDB.updateItem({
           Key: { address: { S: payload.address } },
           TableName: 'user-settings',
-          UpdateExpression: updateKeys.map(k => `SET ${k} = :_${k}`).join(', '),
+          UpdateExpression: `SET ${updateKeys
+            .map(k => `${k} = :_${k}`)
+            .join(', ')}`,
           ExpressionAttributeValues: updateKeys.reduce((acc, k) => {
             acc[`:_${k}`] = payload.settings[k]
             return acc
