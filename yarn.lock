@@ -5812,6 +5812,7 @@ serverless-iam-roles-per-function@^1.0.1:
 serverless-kms-secrets@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/serverless-kms-secrets/-/serverless-kms-secrets-1.0.3.tgz#23db8b4e78e3a3768fc68418330055edb755ecee"
+  integrity sha512-I4CTYCfe5e23KpbWo9p6ddB3BgI5115BnVd16IKfUD0l5AlcEoMyw4TxQdzkqcdQw9LL2V96o0mnisl56CY1rA==
   dependencies:
     aws-sdk "^2.72.0"
     bluebird "^3.5.0"
@@ -5821,7 +5822,7 @@ serverless-kms-secrets@^1.0.3:
     yaml-edit "^0.1.3"
     yamljs "^0.2.10"
 
-serverless@^1.27.3:
+serverless@^1.33.2:
   version "1.33.2"
   resolved "https://registry.yarnpkg.com/serverless/-/serverless-1.33.2.tgz#0a89c8d35a14bb45d3c41f6ff09d6994b9253109"
   integrity sha512-iBxoLPEurvlo0TukA0y+hKpuw4zrU5o1oR1w3t3rK2Odrvufrl/gywuD18xahcs6xhvzuk1sDC6Sr6zr8ze5NA==
