@@ -22,9 +22,16 @@ module.exports.patch = async (event, _context, callback) => {
     })
 
   // Update settings and return them
-  const updateKeys = ['email', 'dogecoinAddress'].filter(
-    k => payload.settings[k]
-  )
+  const updateKeys = [
+    'email',
+    'dogecoinAddress',
+    'name',
+    'phone',
+    'court-notification-setting-appeal',
+    'court-notification-setting-draw',
+    'court-notification-setting-lose',
+    'court-notification-setting-win'
+  ].filter(k => payload.settings[k])
   callback(null, {
     statusCode: 200,
     headers: { 'Access-Control-Allow-Origin': '*' },
