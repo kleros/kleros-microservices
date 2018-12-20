@@ -7,12 +7,16 @@ module.exports.patch = async (event, _context, callback) => {
 
   // Validate signature
   const payload = JSON.parse(event.body).payload
-  if (
-    (await web3.eth.accounts.recover(
-      JSON.stringify(payload.settings),
-      payload.signature
-    )) !== payload.address
-  )
+  try {
+    if (
+      (await web3.eth.accounts.recover(
+        JSON.stringify(payload.settings),
+        payload.signature
+      )) !== payload.address
+    )
+      throw new Error('Signature does not match supplied address.')
+  } catch (err) {
+    console.error(err)
     return callback(null, {
       statusCode: 403,
       headers: { 'Access-Control-Allow-Origin': '*' },
@@ -20,6 +24,7 @@ module.exports.patch = async (event, _context, callback) => {
         error: 'Signature is invalid or does not match supplied address.'
       })
     })
+  }
 
   // Update settings and return them
   const updateKeys = [
