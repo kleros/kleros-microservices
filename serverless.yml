@@ -31,6 +31,10 @@ custom:
           path: doges-on-trial,
           description: 'Microservices for the Doges on Trial dapp.',
         }
+      - {
+          path: email-sender,
+          description: 'Microservice that sends an email from an event log.',
+        }
     models:
       - {
           name: ErrorResponse,
@@ -63,16 +67,16 @@ custom:
           schema: '${file(src/global/models/user-settings.json):patch.response}',
         }
       - {
-          name: PostDogesOnTrialDogeImagesRequest,
-          description: 'The request for postDogesOnTrialDogeImages.',
-          contentType: application/json,
-          schema: '${file(src/doges-on-trial/models/doge-images.json):post.request}',
-        }
-      - {
           name: PostDogesOnTrialDogeImagesResponse,
           description: 'The response for postDogesOnTrialDogeImages.',
           contentType: application/json,
           schema: '${file(src/doges-on-trial/models/doge-images.json):post.response}',
+        }
+      - {
+          name: PostEmailSenderRequest,
+          description: 'The request for postEmailSenderRequest.',
+          contentType: application/json,
+          schema: '${file(src/email-sender/models/email-sender.json):post.request}',
         }
 functions:
   postCFS:
@@ -173,3 +177,19 @@ functions:
             responseModels: { application/json: ErrorResponse },
           },
         ]
+  postEmailSender:
+    handler: src/email-sender/email-sender.post
+    events:
+      - { http: { path: email-sender, method: post, cors: true } }
+    iamRoleStatementsName: 'postEmailSender-${self:provider.stage}-lambda-role'
+    iamRoleStatements:
+      - {
+          Effect: Allow,
+          Action: ['KMS:Decrypt'],
+          Resource: '${self:custom.kmsSecrets.keyArn}',
+        }
+      - {
+          Effect: Allow,
+          Action: ['dynamodb:GetItem'],
+          Resource: 'arn:aws:dynamodb:us-east-2:547511976516:table/user-settings',
+        }

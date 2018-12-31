@@ -1,0 +1,22 @@
+{
+  "post": {
+    "request": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "type": "object",
+          "properties": {
+            "eventName": {
+              "type": "string",
+              "description": "The name of the event."
+            },
+            "address": {
+              "type": "string",
+              "description": "Address of user that sent the tx."
+            }
+          }
+        }
+      }
+    }
+  }
+}
