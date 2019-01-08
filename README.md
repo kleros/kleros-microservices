@@ -14,9 +14,14 @@
 
 Collection of Kleros microservices.
 
-## Other Scripts
+## Deploying a new microservice
 
-- `yarn run prettify` - Apply prettier to the entire project.
-- `yarn run lint` - Lint the entire project's .js files.
-- `yarn run lint --fix` - Fix fixable linting errors in .js files.
-- `yarn run cz` - Run commitizen.
+1) Add your service to `serverless.yml`.
+
+2) Get AWS credentials from dashboard and set environment variables `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
+
+3) `yarn build` to rebuild problematic dependencies with docker.
+
+4) `yarn deploy:staging` will deploy your new staging microservice for you to test with. `yarn deploy:function <NEW_SERVICE>` can be used after it has been deployed a first time to re-deploy just your function.
+
+5) `yarn deploy` will create a production microservice once you are happy with your staged function.
