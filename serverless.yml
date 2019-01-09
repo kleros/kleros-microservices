@@ -187,6 +187,8 @@ functions:
     handler: src/event-handler/example-email.post
     events:
       - { http: { path: event-handler-example-email, method: post, cors: true } }
+    environment:
+      INFURA_URL: '${self:custom.kmsSecrets.secrets.${self:custom.environments.${self:provider.stage}}_INFURA_URL}'
     iamRoleStatementsName: 'eventHandlerExampleEmail-${self:provider.stage}-lambda-role'
     iamRoleStatements:
       - {
