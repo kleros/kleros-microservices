@@ -38,10 +38,11 @@ module.exports.post = async (event, _context, callback) => {
 
   if (emailAddress == null)
     return callback(null, {
-      statusCode: 400,
+      statusCode: 204,
       headers: { 'Access-Control-Allow-Origin': '*' },
       body: JSON.stringify({
-        error: 'No registered email address.'
+        sent: false,
+        reason: 'No email address found.'
       })
     })
 
@@ -65,7 +66,10 @@ module.exports.post = async (event, _context, callback) => {
   await sendGridClient.send(msg)
 
   callback(null, {
-    statusCode: 201,
-    headers: { 'Access-Control-Allow-Origin': '*' }
+    statusCode: 204,
+    headers: { 'Access-Control-Allow-Origin': '*' },
+    body: JSON.stringify({
+      sent: true
+    })
   })
 }
