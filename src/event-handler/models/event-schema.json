@@ -1,0 +1,50 @@
+{
+  "post": {
+    "request": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "type": "object",
+          "properties": {
+            "event": {
+              "type": "string",
+              "description": "The name of the event."
+            },
+            "address": {
+              "type": "string",
+              "description": "Address of user that sent the tx."
+            },
+            "signature": {
+              "type": "string",
+              "description": "The event signature, null if it’s an anonymous event."
+            },
+            "returnValues": {
+              "type": "object",
+              "description": "The return values from the event."
+            },
+            "logIndex": {
+              "type": "number",
+              "description": "Integer of the event index position in the block."
+            },
+            "transactionIndex": {
+              "type": "number",
+              "description": "Integer of the transaction’s index position the event was created in."
+            },
+            "transactionHash": {
+              "type": "string",
+              "description": "Hash of the transaction this event was created in."
+            },
+            "blockHash": {
+              "type": "string",
+              "description": "Hash of the block this event was created in. null when it’s still pending."
+            },
+            "blockNumber": {
+              "type": "number",
+              "description": "The block number this log was created in. null when still pending."
+            }
+          }
+        }
+      }
+    }
+  }
+}

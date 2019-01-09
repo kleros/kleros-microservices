@@ -2,9 +2,9 @@
  * Example email sending lambda function that works with events.kleros.io.
  * Replace the email lookup with your subscribers for an event and replace your sendgrid template.
  */
-const sgMail = require('@sendgrid/mail')
 const Web3 = require('web3')
 
+const _sendgrid = require('../utils/sendgrid')
 const dynamoDB = require('../utils/dynamo-db')
 
 module.exports.post = async (event, _context, callback) => {
@@ -20,7 +20,7 @@ module.exports.post = async (event, _context, callback) => {
     })
   }
 
-  // FIXME determine which email address you want to use. This example uses the caller of tx that kicks off the event
+  // TODO determine which email address you want to use. This example uses the caller of tx that kicks off the event
   const txHash = body.transactionHash
 
   // Find the sender of the tx
@@ -47,23 +47,23 @@ module.exports.post = async (event, _context, callback) => {
     })
 
   // Sendgrid
-  sgMail.setApiKey(process.env.SENDGRID_API_KEY)
-  sgMail.setSubstitutionWrappers('{{', '}}')
+  sendGridClient = _sendgrid()
 
-  // FIXME Add your email template and message here
+  // TODO Add your email template and message here
   const msg = {
     to: emailAddress,
     from: {
       name: 'Kleros',
       email: 'contact@kleros.io'
     },
-    templateId: process.env.SENDGRID_TEMPLATE_ID,
+    templateId: 'd-9a9d84fc7ec74b67bce3ee490be67c3b',
     dynamic_template_data: {
       subject: 'Test Email Update',
-      eventName: body.eventName
+      eventName: body.event
     }
   }
-  sgMail.send(msg)
+
+  await sendGridClient.send(msg)
 
   callback(null, {
     statusCode: 201,

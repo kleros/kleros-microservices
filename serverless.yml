@@ -32,8 +32,8 @@ custom:
           description: 'Microservices for the Doges on Trial dapp.',
         }
       - {
-          path: email-sender,
-          description: 'Microservice that sends an email from an event log.',
+          path: event-handler,
+          description: 'Microservice that handles event logs from the blockchain.',
         }
     models:
       - {
@@ -67,16 +67,22 @@ custom:
           schema: '${file(src/global/models/user-settings.json):patch.response}',
         }
       - {
+          name: PostDogesOnTrialDogeImagesRequest,
+          description: 'The request for postDogesOnTrialDogeImages.',
+          contentType: application/json,
+          schema: '${file(src/doges-on-trial/models/doge-images.json):post.request}',
+        }
+      - {
           name: PostDogesOnTrialDogeImagesResponse,
           description: 'The response for postDogesOnTrialDogeImages.',
           contentType: application/json,
           schema: '${file(src/doges-on-trial/models/doge-images.json):post.response}',
         }
       - {
-          name: PostEmailSenderRequest,
-          description: 'The request for postEmailSenderRequest.',
+          name: PostEventHandlersHandlerRequest,
+          description: 'The request for postEventHandlers.',
           contentType: application/json,
-          schema: '${file(src/email-sender/models/email-sender.json):post.request}',
+          schema: '${file(src/event-handler/models/event-schema.json):post.request}',
         }
 functions:
   postCFS:
@@ -177,11 +183,11 @@ functions:
             responseModels: { application/json: ErrorResponse },
           },
         ]
-  postEmailSender:
-    handler: src/email-sender/email-sender.post
+  postEventHandlersExampleEmail:
+    handler: src/event-handler/example-email.post
     events:
-      - { http: { path: email-sender, method: post, cors: true } }
-    iamRoleStatementsName: 'postEmailSender-${self:provider.stage}-lambda-role'
+      - { http: { path: event-handler-example-email, method: post, cors: true } }
+    iamRoleStatementsName: 'eventHandlerExampleEmail-${self:provider.stage}-lambda-role'
     iamRoleStatements:
       - {
           Effect: Allow,
