@@ -2,7 +2,7 @@
  * Example email sending lambda function that works with events.kleros.io.
  * Replace the email lookup with your subscribers for an event and replace your sendgrid template.
  */
-const _web3 = require('../utils/sendgrid')
+const _web3 = require('../utils/web3')
 const _sendgrid = require('../utils/sendgrid')
 const dynamoDB = require('../utils/dynamo-db')
 
@@ -28,7 +28,7 @@ module.exports.post = async (event, _context, callback) => {
 
   // Fetch from the user-settings table
   const item = await dynamoDB.getItem({
-    Key: { address: { S: transaction.from } },
+    Key: { address: { S: transaction.from } }, // TODO determine which ETH address to use to lookup email
     TableName: 'user-settings',
     AttributesToGet: ['email']
   })
@@ -46,9 +46,6 @@ module.exports.post = async (event, _context, callback) => {
       })
     })
 
-  // Sendgrid
-  sendGridClient = _sendgrid()
-
   // TODO Add your email template and message here
   const msg = {
     to: emailAddress,
@@ -56,13 +53,15 @@ module.exports.post = async (event, _context, callback) => {
       name: 'Kleros',
       email: 'contact@kleros.io'
     },
-    templateId: 'd-9a9d84fc7ec74b67bce3ee490be67c3b',
-    dynamic_template_data: {
+    templateId: 'd-9a9d84fc7ec74b67bce3ee490be67c3b', // TODO replace template ID here
+    dynamic_template_data: { // TODO Add your template variables here
       subject: 'Test Email Update',
       eventName: body.event
     }
   }
 
+  // Sendgrid
+  sendGridClient = _sendgrid()
   await sendGridClient.send(msg)
 
   callback(null, {

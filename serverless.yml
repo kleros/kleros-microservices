@@ -32,7 +32,7 @@ custom:
           description: 'Microservices for the Doges on Trial dapp.',
         }
       - {
-          path: event-handler,
+          path: event-handlers,
           description: 'Microservice that handles event logs from the blockchain.',
         }
     models:
@@ -82,7 +82,7 @@ custom:
           name: PostEventHandlersHandlerRequest,
           description: 'The request for postEventHandlers.',
           contentType: application/json,
-          schema: '${file(src/event-handler/models/event-schema.json):post.request}',
+          schema: '${file(src/event-handlers/models/event-schema.json):post.request}',
         }
 functions:
   postCFS:
@@ -184,7 +184,7 @@ functions:
           },
         ]
   postEventHandlersExampleEmail:
-    handler: src/event-handler/example-email.post
+    handler: src/event-handlers/example-email.post
     events:
       - { http: { path: event-handler-example-email, method: post, cors: true } }
     environment:
