@@ -2,8 +2,7 @@
  * Example email sending lambda function that works with events.kleros.io.
  * Replace the email lookup with your subscribers for an event and replace your sendgrid template.
  */
-const Web3 = require('web3')
-
+const _web3 = require('../utils/sendgrid')
 const _sendgrid = require('../utils/sendgrid')
 const dynamoDB = require('../utils/dynamo-db')
 
@@ -24,7 +23,7 @@ module.exports.post = async (event, _context, callback) => {
   const txHash = body.transactionHash
 
   // Find the sender of the tx
-  const web3 = new Web3(process.env.PROVIDER_URI)
+  const web3 = await _web3()
   const transaction = await web3.eth.getTransaction(txHash)
 
   // Fetch from the user-settings table
