@@ -38,7 +38,7 @@ module.exports.post = async (event, _context, callback) => {
 
   if (emailAddress == null)
     return callback(null, {
-      statusCode: 204,
+      statusCode: 200,
       headers: { 'Access-Control-Allow-Origin': '*' },
       body: JSON.stringify({
         sent: false,
@@ -66,7 +66,7 @@ module.exports.post = async (event, _context, callback) => {
   await sendGridClient.send(msg)
 
   callback(null, {
-    statusCode: 204,
+    statusCode: 200,
     headers: { 'Access-Control-Allow-Origin': '*' },
     body: JSON.stringify({
       sent: true
