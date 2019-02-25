@@ -37,7 +37,9 @@ module.exports.patch = async (event, _context, callback) => {
     'courtNotificationSettingLose',
     'courtNotificationSettingWin',
     'centralizedArbitratorDashboardNotificationSettingDisputes',
-    'centralizedArbitratorDashboardNotificationSettingEvidence'
+    'centralizedArbitratorDashboardNotificationSettingEvidence',
+    't2crNotificationSettingDispute',
+    't2crNotificationSettingRulingGiven'
   ].filter(k => payload.settings[k])
   callback(null, {
     statusCode: 200,
