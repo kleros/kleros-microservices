@@ -191,6 +191,7 @@ functions:
       - { http: { path: justifications, method: put, cors: true } }
     environment:
       INFURA_URL: '${self:custom.kmsSecrets.secrets.${self:custom.environments.${self:provider.stage}}_INFURA_URL}'
+      KLEROS_LIQUID_ADDRESS: '${self:custom.kmsSecrets.secrets.${self:custom.environments.${self:provider.stage}}_KLEROS_LIQUID_ADDRESS}'
     iamRoleStatementsName: 'putJustifications-${self:provider.stage}-lambda-role'
     iamRoleStatements:
       - {
@@ -200,7 +201,12 @@ functions:
         }
       - {
           Effect: Allow,
-          Action: ['dynamodb:GetItem', 'dynamodb:PutItem'],
+          Action: ['dynamodb:GetItem'],
+          Resource: 'arn:aws:dynamodb:us-east-2:547511976516:table/user-settings',
+        }
+      - {
+          Effect: Allow,
+          Action: ['dynamodb:PutItem'],
           Resource: 'arn:aws:dynamodb:us-east-2:547511976516:table/justifications',
         }
     documentation:

@@ -19,11 +19,16 @@
                 },
                 "appeal": {
                   "type": "number",
-                  "description": "The appeal of the dispute the votes are cast for."
+                  "description":
+                    "The appeal of the dispute the votes are cast for."
                 },
-                "voteIDs": {
-                  "type": "number",
-                  "description": "The ID of the votes in the dispute the votes are cast for."
+                "IDs": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "description":
+                    "The ID of the votes in the dispute the votes are cast for."
                 },
                 "justification": {
                   "type": "string",
@@ -54,11 +59,16 @@
                 },
                 "appeal": {
                   "type": "number",
-                  "description": "The appeal of the dispute the votes are cast for."
+                  "description":
+                    "The appeal of the dispute the votes are cast for."
                 },
-                "voteIDs": {
-                  "type": "number",
-                  "description": "The ID of the votes in the dispute the votes are cast for."
+                "IDs": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "description":
+                    "The ID of the votes in the dispute the votes are cast for."
                 },
                 "justification": {
                   "type": "string",
