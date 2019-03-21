@@ -15,14 +15,14 @@ module.exports.put = async (event, _context, callback) => {
   try {
     if (
       (await web3.eth.accounts.recover(
-        JSON.stringify(payload.votes),
+        JSON.stringify(payload.justification),
         payload.signature
       )) !==
       (await dynamoDB.getItem({
         Key: { address: { S: payload.address } },
         TableName: 'user-settings',
-        ProjectionExpression: 'derivedAccountAddressForJustifications'
-      })).Item.derivedAccountAddressForJustifications.S
+        ProjectionExpression: 'derivedAccountAddress'
+      })).Item.derivedAccountAddress.S
     )
       throw new Error(
         "Signature does not match the supplied address' derived account address for justifications."
@@ -40,10 +40,14 @@ module.exports.put = async (event, _context, callback) => {
   }
 
   // Verify votes belong to user
-  for (const voteID of payload.votes.IDs)
+  for (const voteID of payload.justification.IDs)
     if (
       (await klerosLiquid.methods
-        .getVote(payload.votes.disputeID, payload.votes.appeal, voteID)
+        .getVote(
+          payload.justification.disputeID,
+          payload.justification.appeal,
+          voteID
+        )
         .call()).account !== payload.address
     )
       return callback(null, {
@@ -58,10 +62,10 @@ module.exports.put = async (event, _context, callback) => {
   // Save justification
   await dynamoDB.putItem({
     Item: {
-      disputeID: { N: String(payload.votes.disputeID) },
-      appeal: { N: String(payload.votes.appeal) },
-      IDs: { NS: payload.votes.IDs },
-      justification: { S: payload.votes.justification }
+      disputeID: { N: String(payload.justification.disputeID) },
+      appeal: { N: String(payload.justification.appeal) },
+      IDs: { NS: payload.justification.IDs },
+      justification: { S: payload.justification.justification }
     },
     TableName: 'justifications'
   })
@@ -70,7 +74,7 @@ module.exports.put = async (event, _context, callback) => {
     headers: { 'Access-Control-Allow-Origin': '*' },
     body: JSON.stringify({
       payload: {
-        votes: payload.votes
+        votes: payload.justification
       }
     })
   })

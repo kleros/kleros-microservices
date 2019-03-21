@@ -1,7 +1,26 @@
 const _web3 = require('../utils/web3')
 const dynamoDB = require('../utils/dynamo-db')
 
-module.exports.patch = async (event, _context, callback) => {
+const whitelist = [
+  'email',
+  'dogecoinAddress',
+  'fullName',
+  'phone',
+  'derivedAccountAddress',
+  'courtNotificationSettingAppeal',
+  'courtNotificationSettingDraw',
+  'courtNotificationSettingLose',
+  'courtNotificationSettingWin',
+  'centralizedArbitratorDashboardNotificationSettingDisputes',
+  'centralizedArbitratorDashboardNotificationSettingEvidence',
+  't2crNotificationSettingDispute',
+  't2crNotificationSettingRulingGiven',
+  'escrowNotificationSettingDispute',
+  'escrowNotificationSettingAppeal',
+  'escrowNotificationSettingRulingGiven'
+]
+
+module.exports.get = async (event, _context, callback) => {
   // Initialize web3
   const web3 = await _web3()
 
@@ -12,7 +31,62 @@ module.exports.patch = async (event, _context, callback) => {
       (await web3.eth.accounts.recover(
         JSON.stringify(payload.settings),
         payload.signature
-      )) !== payload.address
+      )) !==
+      (await dynamoDB.getItem({
+        Key: { address: { S: payload.address } },
+        TableName: 'user-settings',
+        ProjectionExpression: 'derivedAccountAddress'
+      })).Item.derivedAccountAddress.S
+    )
+      throw new Error('Signature does not match supplied address.')
+  } catch (err) {
+    console.error(err)
+    return callback(null, {
+      statusCode: 403,
+      headers: { 'Access-Control-Allow-Origin': '*' },
+      body: JSON.stringify({
+        error: 'Signature is invalid or does not match supplied address.'
+      })
+    })
+  }
+
+  // Fetch settings and return them
+  callback(null, {
+    statusCode: 200,
+    headers: { 'Access-Control-Allow-Origin': '*' },
+    body: JSON.stringify({
+      payload: {
+        settings: await dynamoDB.getItem({
+          Key: { address: { S: payload.address } },
+          TableName: 'user-settings',
+          ProjectionExpression: whitelist
+            .filter(k => payload.settings[k])
+            .join(', ')
+        })
+      }
+    })
+  })
+}
+
+module.exports.patch = async (event, _context, callback) => {
+  // Initialize web3
+  const web3 = await _web3()
+
+  // Validate signature
+  const payload = JSON.parse(event.body).payload
+  try {
+    const account = await web3.eth.accounts.recover(
+      JSON.stringify(payload.settings),
+      payload.signature
+    )
+    if (
+      account !== payload.address &&
+      account !==
+        (await dynamoDB.getItem({
+          Key: { address: { S: payload.address } },
+          TableName: 'user-settings',
+          ProjectionExpression: 'derivedAccountAddress'
+        })).Item.derivedAccountAddress.S
     )
       throw new Error('Signature does not match supplied address.')
   } catch (err) {
@@ -27,24 +101,7 @@ module.exports.patch = async (event, _context, callback) => {
   }
 
   // Update settings and return them
-  const updateKeys = [
-    'email',
-    'dogecoinAddress',
-    'fullName',
-    'phone',
-    'derivedAccountAddressForJustifications',
-    'courtNotificationSettingAppeal',
-    'courtNotificationSettingDraw',
-    'courtNotificationSettingLose',
-    'courtNotificationSettingWin',
-    'centralizedArbitratorDashboardNotificationSettingDisputes',
-    'centralizedArbitratorDashboardNotificationSettingEvidence',
-    't2crNotificationSettingDispute',
-    't2crNotificationSettingRulingGiven',
-    'escrowNotificationSettingDispute',
-    'escrowNotificationSettingAppeal',
-    'escrowNotificationSettingRulingGiven'
-  ].filter(k => payload.settings[k])
+  const updateKeys = whitelist.filter(k => payload.settings[k])
   callback(null, {
     statusCode: 200,
     headers: { 'Access-Control-Allow-Origin': '*' },

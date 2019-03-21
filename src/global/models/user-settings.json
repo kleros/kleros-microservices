@@ -1,4 +1,42 @@
 {
+  "get": {
+    "request": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "type": "object",
+          "properties": {
+            "address": {
+              "type": "string",
+              "description": "The address to get settings for."
+            },
+            "settings": {
+              "type": "object",
+              "description": "The settings query."
+            },
+            "signature": {
+              "type": "string",
+              "description": "The signed settings query."
+            }
+          }
+        }
+      }
+    },
+    "response": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "type": "object",
+          "properties": {
+            "settings": {
+              "type": "object",
+              "description": "The queried settings object."
+            }
+          }
+        }
+      }
+    }
+  },
   "patch": {
     "request": {
       "type": "object",

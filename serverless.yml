@@ -51,6 +51,18 @@ custom:
           schema: '${file(src/global/models/cfs.json):post.response}',
         }
       - {
+          name: GetUserSettingsRequest,
+          description: 'The request for getUserSettings.',
+          contentType: application/json,
+          schema: '${file(src/global/models/user-settings.json):get.request}',
+        }
+      - {
+          name: GetUserSettingsResponse,
+          description: 'The response for getUserSettings.',
+          contentType: application/json,
+          schema: '${file(src/global/models/user-settings.json):get.response}',
+        }
+      - {
           name: PatchUserSettingsRequest,
           description: 'The request for patchUserSettings.',
           contentType: application/json,
@@ -115,6 +127,39 @@ functions:
             responseModels: { application/json: ErrorResponse },
           },
         ]
+  getUserSettings:
+    handler: src/global/user-settings.get
+    events:
+      - { http: { path: user-settings, method: get, cors: true } }
+    environment:
+      INFURA_URL: '${self:custom.kmsSecrets.secrets.${self:custom.environments.${self:provider.stage}}_INFURA_URL}'
+    iamRoleStatementsName: 'getUserSettings-${self:provider.stage}-lambda-role'
+    iamRoleStatements:
+      - {
+          Effect: Allow,
+          Action: ['KMS:Decrypt'],
+          Resource: '${self:custom.kmsSecrets.keyArn}',
+        }
+      - {
+          Effect: Allow,
+          Action: ['dynamodb:GetItem'],
+          Resource: 'arn:aws:dynamodb:us-east-2:547511976516:table/user-settings',
+        }
+    documentation:
+      summary: 'Get user settings.'
+      description: 'Get user settings for an Ethereum address.'
+      requestModels: { application/json: GetUserSettingsRequest }
+      methodResponses:
+        [
+          {
+            statusCode: '200',
+            responseModels: { application/json: GetUserSettingsResponse },
+          },
+          {
+            statusCode: '400',
+            responseModels: { application/json: ErrorResponse },
+          },
+        ]
   patchUserSettings:
     handler: src/global/user-settings.patch
     events:
@@ -130,7 +175,7 @@ functions:
         }
       - {
           Effect: Allow,
-          Action: ['dynamodb:UpdateItem'],
+          Action: ['dynamodb:GetItem', 'dynamodb:UpdateItem'],
           Resource: 'arn:aws:dynamodb:us-east-2:547511976516:table/user-settings',
         }
     documentation:
