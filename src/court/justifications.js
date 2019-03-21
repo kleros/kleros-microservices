@@ -56,21 +56,21 @@ module.exports.put = async (event, _context, callback) => {
       })
 
   // Save justification
+  await dynamoDB.putItem({
+    Item: {
+      disputeID: { N: String(payload.votes.disputeID) },
+      appeal: { N: String(payload.votes.appeal) },
+      IDs: { NS: payload.votes.IDs },
+      justification: { S: payload.votes.justification }
+    },
+    TableName: 'justifications'
+  })
   callback(null, {
     statusCode: 200,
     headers: { 'Access-Control-Allow-Origin': '*' },
     body: JSON.stringify({
       payload: {
-        votes: await dynamoDB.putItem({
-          Item: {
-            disputeID: { N: payload.votes.disputeID },
-            appeal: { N: payload.votes.appeal },
-            IDs: { NS: payload.votes.IDs },
-            justification: { S: payload.votes.justification }
-          },
-          TableName: 'justifications',
-          ReturnValues: 'ALL_NEW'
-        })
+        votes: payload.votes
       }
     })
   })
