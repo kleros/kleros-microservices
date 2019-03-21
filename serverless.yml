@@ -130,7 +130,7 @@ functions:
   getUserSettings:
     handler: src/global/user-settings.get
     events:
-      - { http: { path: user-settings, method: get, cors: true } }
+      - { http: { path: user-settings, method: post, cors: true } }
     environment:
       INFURA_URL: '${self:custom.kmsSecrets.secrets.${self:custom.environments.${self:provider.stage}}_INFURA_URL}'
     iamRoleStatementsName: 'getUserSettings-${self:provider.stage}-lambda-role'
