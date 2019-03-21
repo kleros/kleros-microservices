@@ -32,6 +32,7 @@ module.exports.patch = async (event, _context, callback) => {
     'dogecoinAddress',
     'fullName',
     'phone',
+    'derivedAccountAddressForJustifications',
     'courtNotificationSettingAppeal',
     'courtNotificationSettingDraw',
     'courtNotificationSettingLose',

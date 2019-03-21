@@ -1,0 +1,74 @@
+{
+  "put": {
+    "request": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "type": "object",
+          "properties": {
+            "address": {
+              "type": "string",
+              "description": "The address casting the votes."
+            },
+            "votes": {
+              "type": "object",
+              "properties": {
+                "disputeID": {
+                  "type": "number",
+                  "description": "The ID of the dispute the votes are cast for."
+                },
+                "appeal": {
+                  "type": "number",
+                  "description": "The appeal of the dispute the votes are cast for."
+                },
+                "voteIDs": {
+                  "type": "number",
+                  "description": "The ID of the votes in the dispute the votes are cast for."
+                },
+                "justification": {
+                  "type": "string",
+                  "description": "The justification for the votes."
+                }
+              }
+            },
+            "signature": {
+              "type": "string",
+              "description": "The signed votes data object."
+            }
+          }
+        }
+      }
+    },
+    "response": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "type": "object",
+          "properties": {
+            "votes": {
+              "type": "object",
+              "properties": {
+                "disputeID": {
+                  "type": "number",
+                  "description": "The ID of the dispute the votes are cast for."
+                },
+                "appeal": {
+                  "type": "number",
+                  "description": "The appeal of the dispute the votes are cast for."
+                },
+                "voteIDs": {
+                  "type": "number",
+                  "description": "The ID of the votes in the dispute the votes are cast for."
+                },
+                "justification": {
+                  "type": "string",
+                  "description": "The justification for the votes."
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

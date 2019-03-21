@@ -74,6 +74,18 @@ custom:
           contentType: application/json,
           schema: '${file(src/doges-on-trial/models/doge-images.json):post.response}',
         }
+      - {
+          name: PutJustificationsRequest,
+          description: 'The request for putJustifications.',
+          contentType: application/json,
+          schema: '${file(src/court/models/justifications.json):put.request}',
+        }
+      - {
+          name: PutJustificationsResponse,
+          description: 'The response for putJustifications.',
+          contentType: application/json,
+          schema: '${file(src/court/models/justifications.json):put.response}',
+        }
 functions:
   postCFS:
     handler: src/global/cfs.post
@@ -167,6 +179,39 @@ functions:
             statusCode: '200',
             responseModels:
               { application/json: PostDogesOnTrialDogeImagesResponse },
+          },
+          {
+            statusCode: '400',
+            responseModels: { application/json: ErrorResponse },
+          },
+        ]
+  putJustifications:
+    handler: src/court/justifications.put
+    events:
+      - { http: { path: justifications, method: put, cors: true } }
+    environment:
+      INFURA_URL: '${self:custom.kmsSecrets.secrets.${self:custom.environments.${self:provider.stage}}_INFURA_URL}'
+    iamRoleStatementsName: 'putJustifications-${self:provider.stage}-lambda-role'
+    iamRoleStatements:
+      - {
+          Effect: Allow,
+          Action: ['KMS:Decrypt'],
+          Resource: '${self:custom.kmsSecrets.keyArn}',
+        }
+      - {
+          Effect: Allow,
+          Action: ['dynamodb:GetItem', 'dynamodb:PutItem'],
+          Resource: 'arn:aws:dynamodb:us-east-2:547511976516:table/justifications',
+        }
+    documentation:
+      summary: 'Put justification for a vote.'
+      description: 'Put justification for a vote.'
+      requestModels: { application/json: PutJustificationsRequest }
+      methodResponses:
+        [
+          {
+            statusCode: '200',
+            responseModels: { application/json: PutJustificationsResponse },
           },
           {
             statusCode: '400',
