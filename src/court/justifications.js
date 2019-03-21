@@ -42,11 +42,9 @@ module.exports.put = async (event, _context, callback) => {
   // Verify votes belong to user
   for (const voteID of payload.votes.IDs)
     if (
-      (await klerosLiquid.methods.getVote(
-        payload.votes.disputeID,
-        payload.votes.appeal,
-        voteID
-      )).account !== payload.address
+      (await klerosLiquid.methods
+        .getVote(payload.votes.disputeID, payload.votes.appeal, voteID)
+        .call()).account !== payload.address
     )
       return callback(null, {
         statusCode: 403,
