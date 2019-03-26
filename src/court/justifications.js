@@ -40,24 +40,24 @@ module.exports.put = async (event, _context, callback) => {
   }
 
   // Verify votes belong to user
-  for (const voteID of payload.justification.IDs)
-    if (
-      (await klerosLiquid.methods
-        .getVote(
-          payload.justification.disputeID,
-          payload.justification.appeal,
-          voteID
-        )
-        .call()).account !== payload.address
-    )
+  for (const voteID of payload.justification.IDs) {
+    const vote = await klerosLiquid.methods
+      .getVote(
+        payload.justification.disputeID,
+        payload.justification.appeal,
+        voteID
+      )
+      .call()
+    if (vote.account !== payload.address || vote.voted)
       return callback(null, {
         statusCode: 403,
         headers: { 'Access-Control-Allow-Origin': '*' },
         body: JSON.stringify({
           error:
-            'Not all of the supplied vote IDs belong to the supplied address.'
+            'Not all of the supplied vote IDs belong to the supplied address and are not cast.'
         })
       })
+  }
 
   // Save justification
   await dynamoDB.putItem({
