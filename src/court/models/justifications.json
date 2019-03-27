@@ -21,7 +21,7 @@
                   "type": "number",
                   "description": "The appeal of the dispute the votes are cast for."
                 },
-                "IDs": {
+                "voteIDs": {
                   "type": "array",
                   "items": {
                     "type": "number"
@@ -59,7 +59,7 @@
                   "type": "number",
                   "description": "The appeal of the dispute the votes are cast for."
                 },
-                "IDs": {
+                "voteIDs": {
                   "type": "array",
                   "items": {
                     "type": "number"

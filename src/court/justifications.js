@@ -40,7 +40,7 @@ module.exports.put = async (event, _context, callback) => {
   }
 
   // Verify votes belong to user
-  for (const voteID of payload.justification.IDs) {
+  for (const voteID of payload.justification.voteIDs) {
     const vote = await klerosLiquid.methods
       .getVote(
         payload.justification.disputeID,
@@ -62,9 +62,16 @@ module.exports.put = async (event, _context, callback) => {
   // Save justification
   await dynamoDB.putItem({
     Item: {
-      disputeID: { N: String(payload.justification.disputeID) },
-      appeal: { N: String(payload.justification.appeal) },
-      IDs: { NS: payload.justification.IDs },
+      disputeIDAndAppeal: {
+        S: `${payload.justification.disputeID}-${payload.justification.appeal}`
+      },
+      voteID: {
+        N: String(
+          payload.justification.voteIDs[
+            payload.justification.voteIDs.length - 1
+          ]
+        )
+      },
       justification: { S: payload.justification.justification }
     },
     TableName: 'justifications'
