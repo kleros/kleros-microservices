@@ -1,4 +1,38 @@
 {
+  "get": {
+    "request": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "type": "object",
+          "properties": {
+            "disputeID": {
+              "type": "number",
+              "description": "The ID of the dispute the votes are cast for."
+            },
+            "appeal": {
+              "type": "number",
+              "description": "The appeal of the dispute the votes are cast for."
+            }
+          }
+        }
+      }
+    },
+    "response": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "type": "object",
+          "properties": {
+            "justifications": {
+              "type": "object",
+              "description": "The justifications query response."
+            }
+          }
+        }
+      }
+    }
+  },
   "put": {
     "request": {
       "type": "object",

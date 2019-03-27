@@ -2,6 +2,28 @@ const _web3 = require('../utils/web3')
 const KlerosLiquid = require('../assets/contracts/KlerosLiquid.json')
 const dynamoDB = require('../utils/dynamo-db')
 
+module.exports.get = async (event, _context, callback) => {
+  // Fetch justifications and return them
+  const payload = JSON.parse(event.body).payload
+  callback(null, {
+    statusCode: 200,
+    headers: { 'Access-Control-Allow-Origin': '*' },
+    body: JSON.stringify({
+      payload: {
+        justifications: await dynamoDB.query({
+          ExpressionAttributeValues: {
+            ':disputeIDAndAppeal': {
+              S: `${payload.disputeID}-${payload.appeal}`
+            }
+          },
+          KeyConditionExpression: 'disputeIDAndAppeal = :disputeIDAndAppeal',
+          TableName: 'justifications'
+        })
+      }
+    })
+  })
+}
+
 module.exports.put = async (event, _context, callback) => {
   // Initialize web3 and contracts
   const web3 = await _web3()

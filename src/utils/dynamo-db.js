@@ -6,5 +6,6 @@ const dynamoDB = new DynamoDB({ apiVersion: '2012-08-10', region: 'us-east-2' })
 dynamoDB.getItem = promisify(dynamoDB.getItem)
 dynamoDB.putItem = promisify(dynamoDB.putItem)
 dynamoDB.updateItem = promisify(dynamoDB.updateItem)
+dynamoDB.query = promisify(dynamoDB.query)
 
 module.exports = dynamoDB

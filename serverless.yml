@@ -87,6 +87,18 @@ custom:
           schema: '${file(src/doges-on-trial/models/doge-images.json):post.response}',
         }
       - {
+          name: GetJustificationsRequest,
+          description: 'The request for getJustifications.',
+          contentType: application/json,
+          schema: '${file(src/court/models/justifications.json):get.request}',
+        }
+      - {
+          name: GetJustificationsResponse,
+          description: 'The response for getJustifications.',
+          contentType: application/json,
+          schema: '${file(src/court/models/justifications.json):get.response}',
+        }
+      - {
           name: PutJustificationsRequest,
           description: 'The request for putJustifications.',
           contentType: application/json,
@@ -224,6 +236,32 @@ functions:
             statusCode: '200',
             responseModels:
               { application/json: PostDogesOnTrialDogeImagesResponse },
+          },
+          {
+            statusCode: '400',
+            responseModels: { application/json: ErrorResponse },
+          },
+        ]
+  getJustifications:
+    handler: src/court/justifications.get
+    events:
+      - { http: { path: justifications, method: post, cors: true } }
+    iamRoleStatementsName: 'getJustifications-${self:provider.stage}-lambda-role'
+    iamRoleStatements:
+      - {
+          Effect: Allow,
+          Action: ['dynamodb:Query'],
+          Resource: 'arn:aws:dynamodb:us-east-2:547511976516:table/justifications',
+        }
+    documentation:
+      summary: 'Get justifications for a dispute round.'
+      description: 'Get justifications for a dispute round.'
+      requestModels: { application/json: GetJustificationsRequest }
+      methodResponses:
+        [
+          {
+            statusCode: '200',
+            responseModels: { application/json: GetJustificationsResponse },
           },
           {
             statusCode: '400',
