@@ -17,7 +17,7 @@ module.exports.get = async (event, _context, callback) => {
             }
           },
           KeyConditionExpression: 'disputeIDAndAppeal = :disputeIDAndAppeal',
-          TableName: 'justifications'
+          TableName: `${payload.network}-justifications`
         })
       }
     })
@@ -96,7 +96,7 @@ module.exports.put = async (event, _context, callback) => {
       },
       justification: { S: payload.justification.justification }
     },
-    TableName: 'justifications'
+    TableName: `${payload.network}-justifications`
   })
   callback(null, {
     statusCode: 200,
