@@ -13,7 +13,7 @@
     "commitmsg": "kleros-scripts commitmsg",
     "cz": "kleros-scripts cz",
     "invoke": "env-cmd ./.env serverless invoke -l -f",
-    "build": "docker run --rm -v $PWD:/data -w /data lambci/lambda:build-nodejs8.10 npm rebuild scrypt",
+    "build": "docker run --rm -v $PWD:/data -w /data node:8 npm rebuild scrypt",
     "deploy:function": "env-cmd ./.env serverless deploy function -f",
     "deploy:staging": "env-cmd ./.env serverless deploy",
     "deploy": "env-cmd ./.env serverless deploy -s production"

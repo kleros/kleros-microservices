@@ -27,19 +27,16 @@ module.exports.get = async (event, _context, callback) => {
   // Validate signature
   const payload = JSON.parse(event.body).payload
   try {
-    const account = await web3.eth.accounts.recover(
-      JSON.stringify(payload.settings),
-      payload.signature
-    )
-    // accept if sig is from account or derived account
     if (
-      account !== payload.address &&
-      account !==
-        (await dynamoDB.getItem({
-          Key: { address: { S: payload.address } },
-          TableName: 'user-settings',
-          ProjectionExpression: 'derivedAccountAddress'
-        })).Item.derivedAccountAddress.S
+      (await web3.eth.accounts.recover(
+        JSON.stringify(payload.settings),
+        payload.signature
+      )) !==
+      (await dynamoDB.getItem({
+        Key: { address: { S: payload.address } },
+        TableName: 'user-settings',
+        ProjectionExpression: 'derivedAccountAddress'
+      })).Item.derivedAccountAddress.S
     )
       throw new Error('Signature does not match supplied address.')
   } catch (err) {
