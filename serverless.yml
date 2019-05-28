@@ -278,8 +278,10 @@ functions:
     events:
       - { http: { path: justifications, method: put, cors: true } }
     environment:
-      INFURA_URL: '${self:custom.kmsSecrets.secrets.${self:custom.environments.${self:provider.stage}}_INFURA_URL}'
-      KLEROS_LIQUID_ADDRESS: '${self:custom.kmsSecrets.secrets.${self:custom.environments.${self:provider.stage}}_KLEROS_LIQUID_ADDRESS}'
+      INFURA_URL_KOVAN: '${self:custom.kmsSecrets.secrets.STAGING_INFURA_URL}'
+      INFURA_URL_MAINNET: '${self:custom.kmsSecrets.secrets.PRODUCTION_INFURA_URL}'
+      KLEROS_LIQUID_ADDRESS_KOVAN: '${self:custom.kmsSecrets.secrets.STAGING_KLEROS_LIQUID_ADDRESS}'
+      KLEROS_LIQUID_ADDRESS_MAINNET: '${self:custom.kmsSecrets.secrets.PRODUCTION_KLEROS_LIQUID_ADDRESS}'
     iamRoleStatementsName: 'putJustifications-${self:provider.stage}-lambda-role'
     iamRoleStatements:
       - {
