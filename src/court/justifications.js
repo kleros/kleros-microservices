@@ -1,4 +1,6 @@
-const _web3 = require('../utils/web3')
+const Web3 = require('web3')
+
+const getEnvVars = require('../utils/get-env-vars')
 const KlerosLiquid = require('../assets/contracts/KlerosLiquid.json')
 const dynamoDB = require('../utils/dynamo-db')
 
@@ -25,15 +27,51 @@ module.exports.get = async (event, _context, callback) => {
 }
 
 module.exports.put = async (event, _context, callback) => {
-  // Initialize web3 and contracts
-  const web3 = await _web3()
-  const klerosLiquid = new web3.eth.Contract(
-    KlerosLiquid.abi,
-    process.env.KLEROS_LIQUID_ADDRESS
-  )
-
   // Validate signature
   const payload = JSON.parse(event.body).payload
+
+  if (!payload.network)
+    return callback(null, {
+      statusCode: 403,
+      headers: { 'Access-Control-Allow-Origin': '*' },
+      body: JSON.stringify({
+        error:
+          "Network not specified"
+      })
+    })
+
+  let klerosLiquidAddress
+  let web3Uri
+  switch (payload.network) {
+    case 'mainnet':
+      const {
+        INFURA_URL_MAINNET
+      } = await getEnvVars(['INFURA_URL_MAINNET'])
+      klerosLiquidAddress = process.env.KLEROS_LIQUID_ADDRESS_MAINNET
+      web3Uri = INFURA_URL_MAINNET
+      break
+    case 'kovan':
+      const {
+        INFURA_URL_KOVAN
+      } = await getEnvVars([
+        'INFURA_URL_KOVAN'
+      ])
+      klerosLiquidAddress = process.env.KLEROS_LIQUID_ADDRESS_KOVAN
+      web3Uri = INFURA_URL_KOVAN
+      break;
+    default:
+      return callback(null, {
+        statusCode: 403,
+        headers: { 'Access-Control-Allow-Origin': '*' },
+        body: JSON.stringify({
+          error:
+            `No Kleros Liquid address found for network ${payload.network}`
+        })
+      })
+  }
+
+  const web3 = new Web3(new Web3.providers.HttpProvider(web3Uri))
+
   try {
     if (
       (await web3.eth.accounts.recover(
@@ -60,6 +98,11 @@ module.exports.put = async (event, _context, callback) => {
       })
     })
   }
+
+  const klerosLiquid = new web3.eth.Contract(
+    KlerosLiquid.abi,
+    klerosLiquidAddress
+  )
 
   // Verify votes belong to user
   for (const voteID of payload.justification.voteIDs) {
