@@ -15,6 +15,7 @@
     "invoke": "env-cmd ./.env serverless invoke -l -f",
     "build": "docker run --rm -v $PWD:/data -w /data node:10 npm rebuild scrypt",
     "deploy:function": "env-cmd ./.env serverless deploy function -f",
+    "deploy:prod": "env-cmd ./.env serverless -s production deploy function -f",
     "deploy:staging": "env-cmd ./.env serverless deploy",
     "deploy": "env-cmd ./.env serverless deploy -s production"
   },

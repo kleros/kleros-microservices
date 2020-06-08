@@ -14,11 +14,9 @@ const whitelist = [
   't2crNotificationSettingRulingGiven',
   'escrowNotificationSettingDispute',
   'escrowNotificationSettingAppeal',
-  'escrowNotificationSettingRulingGiven'
+  'escrowNotificationSettingRulingGiven',
+  'pushNotifications',
+  'pushNotificationsURI'
 ]
 
-const emailWhitelist = [
-
-]
-
-export default whitelist
+module.exports = whitelist

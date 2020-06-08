@@ -356,13 +356,13 @@ functions:
           Action: ['dynamodb:PutItem'],
           Resource: 'arn:aws:dynamodb:us-east-2:547511976516:table/token-sale-locales',
         }
-  postUnsubscribe:
-    handler: src/global/unsubscribe
+  getUnsubscribe:
+    handler: src/global/unsubscribe.get
     events:
-      - { http: { path: unsubscribe, method: post, cors: true } }
+      - { http: { path: unsubscribe, method: get, cors: true } }
     environment:
-      ENTROPY: '${self:custom.kmsSecrets.secrets.ENTROPY}'
-    iamRoleStatementsName: 'postUnsubscribe-${self:provider.stage}-lambda-role'
+      PRIVATE_KEY: '${self:custom.kmsSecrets.secrets.PRIVATE_KEY}'
+    iamRoleStatementsName: 'getUnsubscribe-${self:provider.stage}-lambda-role'
     iamRoleStatements:
       - {
           Effect: Allow,
@@ -377,5 +377,10 @@ functions:
       - {
           Effect: Allow,
           Action: ['dynamodb:PutItem'],
+          Resource: 'arn:aws:dynamodb:us-east-2:547511976516:table/user-settings',
+        }
+      - {
+          Effect: Allow,
+          Action: ['dynamodb:UpdateItem'],
           Resource: 'arn:aws:dynamodb:us-east-2:547511976516:table/user-settings',
         }

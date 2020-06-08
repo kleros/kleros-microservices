@@ -1,24 +1,6 @@
 const _web3 = require('../utils/web3')
 const dynamoDB = require('../utils/dynamo-db')
-
-const whitelist = [
-  'email',
-  'dogecoinAddress',
-  'fullName',
-  'phone',
-  'derivedAccountAddress',
-  'courtNotificationSettingAppeal',
-  'courtNotificationSettingDraw',
-  'courtNotificationSettingLose',
-  'courtNotificationSettingWin',
-  'centralizedArbitratorDashboardNotificationSettingDisputes',
-  'centralizedArbitratorDashboardNotificationSettingEvidence',
-  't2crNotificationSettingDispute',
-  't2crNotificationSettingRulingGiven',
-  'escrowNotificationSettingDispute',
-  'escrowNotificationSettingAppeal',
-  'escrowNotificationSettingRulingGiven'
-]
+const whitelist = require('../utils/whitelist')
 
 module.exports.get = async (event, _context, callback) => {
   // Initialize web3

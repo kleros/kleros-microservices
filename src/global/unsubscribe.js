@@ -1,23 +1,27 @@
-const _web3 = require('../utils/web3')
+const Web3 = require('web3')
 const dynamoDB = require('../utils/dynamo-db')
-const getEnvVars = require('../get-env-vars')
+const getEnvVars = require('../utils/get-env-vars')
 const whitelist = require('../utils/whitelist')
 
-module.exports.post = async (event, _context, callback) => {
+module.exports.get = async (event, _context, callback) => {
   // Initialize web3
-  const web3 = await _web3()
+  const web3 = new Web3()
+
+  account = event.queryStringParameters.account
+  console.log(account)
+  signature = event.queryStringParameters.signature
+  dapp = event.queryStringParameters.dapp
 
   // Validate signature
-  const payload = JSON.parse(event.body).payload
   try {
-    const account = await web3.eth.accounts.recover(
-      JSON.stringify(payload.email),
-      payload.signature
+    const recoveredAccount = await web3.eth.accounts.recover(
+      account,
+      signature
     )
-    const { ENTROPY } = await getEnvVars(['ENTROPY'])
-    const lambdaAccount = web3.eth.accounts.create(ENTROPY)
+    const { PRIVATE_KEY } = await getEnvVars(['PRIVATE_KEY'])
+    const lambdaAccount = web3.eth.accounts.privateKeyToAccount(PRIVATE_KEY.replace(/^\s+|\s+$/g, ''))
     if (
-      account !== lambdaAccount.address
+      recoveredAccount !== lambdaAccount.address
     )
       throw new Error('Signature does not match for this email address. Email contact.kleros.io.')
   } catch (err) {
@@ -33,18 +37,18 @@ module.exports.post = async (event, _context, callback) => {
 
   // Update settings for DApp
   const updateKeys = whitelist.filter(k => {
-    if (payload.dapp)
-      return k.includes(payload.dapp)
+    if (dapp)
+      return k.includes(dapp)
     return false
   })
   await dynamoDB.updateItem({
-    Key: { address: { S: payload.address } },
+    Key: { address: { S: account } },
     TableName: 'user-settings',
     UpdateExpression: `SET ${updateKeys
       .map(k => `${k} = :_${k}`)
       .join(', ')}`,
     ExpressionAttributeValues: updateKeys.reduce((acc, k) => {
-      acc[`:_${k}`] = false
+      acc[`:_${k}`] = {"BOOL": false}
       return acc
     }, {})
   })
@@ -53,7 +57,7 @@ module.exports.post = async (event, _context, callback) => {
     statusCode: 200,
     headers: { 'Access-Control-Allow-Origin': '*' },
     body: JSON.stringify({
-      payload: `Unsubscribed from Kleros ${payload.dapp} notifications.`
+      payload: `Unsubscribed from Kleros ${dapp} notifications.`
     })
   })
 }
