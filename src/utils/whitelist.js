@@ -16,7 +16,7 @@ const whitelist = [
   'escrowNotificationSettingAppeal',
   'escrowNotificationSettingRulingGiven',
   'pushNotifications',
-  'pushNotificationsURI'
+  'pushNotificationsData'
 ]
 
 module.exports = whitelist
