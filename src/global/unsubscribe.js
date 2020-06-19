@@ -8,7 +8,6 @@ module.exports.get = async (event, _context, callback) => {
   const web3 = new Web3()
 
   account = event.queryStringParameters.account
-  console.log(account)
   signature = event.queryStringParameters.signature
   dapp = event.queryStringParameters.dapp
 
