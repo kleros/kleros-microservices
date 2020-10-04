@@ -15,6 +15,7 @@ const whitelist = [
   'escrowNotificationSettingDispute',
   'escrowNotificationSettingAppeal',
   'escrowNotificationSettingRulingGiven',
+  'proofOfHumanityNotifications',
   'pushNotifications',
   'pushNotificationsData'
 ]
