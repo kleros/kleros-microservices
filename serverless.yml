@@ -258,6 +258,16 @@ functions:
           Action: ['dynamodb:Query'],
           Resource: 'arn:aws:dynamodb:us-east-2:547511976516:table/mainnet-justifications',
         }
+      - {
+          Effect: Allow,
+          Action: ['dynamodb:Query'],
+          Resource: 'arn:aws:dynamodb:us-east-2:547511976516:table/sokol-justifications',
+        }
+      - {
+          Effect: Allow,
+          Action: ['dynamodb:Query'],
+          Resource: 'arn:aws:dynamodb:us-east-2:547511976516:table/xdai-justifications',
+        }
     documentation:
       summary: 'Get justifications for a dispute round.'
       description: 'Get justifications for a dispute round.'
@@ -303,6 +313,16 @@ functions:
           Effect: Allow,
           Action: ['dynamodb:PutItem'],
           Resource: 'arn:aws:dynamodb:us-east-2:547511976516:table/mainnet-justifications',
+        }
+      - {
+          Effect: Allow,
+          Action: ['dynamodb:PutItem'],
+          Resource: 'arn:aws:dynamodb:us-east-2:547511976516:table/sokol-justifications',
+        }
+      - {
+          Effect: Allow,
+          Action: ['dynamodb:PutItem'],
+          Resource: 'arn:aws:dynamodb:us-east-2:547511976516:table/xdai-justifications',
         }
     documentation:
       summary: 'Put justification for a vote.'
